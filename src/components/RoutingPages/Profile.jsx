@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import defaultProfilePhoto from "../assets/photo.jpg";
+import defaultProfilePhoto from "../../assets/photo.jpg";
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("posts");
