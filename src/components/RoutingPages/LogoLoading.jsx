@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import postify_logo_sketch from "../assets/postify_logo_sketch.mp4";
+import postify_logo_sketch from "../../assets/postify_logo_sketch.mp4";
 
 function LogoLoading() {
   const videoRef = useRef(null); 

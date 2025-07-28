@@ -12,12 +12,13 @@ import ReadMore from './components/RoutingPages/ReadMore';
 import Footer from './components/Footer';
 import Bookmarked from './components/RoutingPages/Bookmarked';
 import Profile from './components/RoutingPages/Profile';
-import LogoLoading from './components/LogoLoading';
+
 import SignUp from './components/RoutingPages/SignUp';
 import ForgotPassword from "./components/RoutingPages/ForgotPassword";
 import SendOTP from "./components/RoutingPages/SendOTP";
 import ProfilePicUpload from "./components/RoutingPages/ProfilePicUpload";
 import UserDatabase from "./components/RoutingPages/UserDatabase";
+import LogoLoading from "./components/RoutingPages/LogoLoading";
 
 
 function App() {
