@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
-import rightHalf from "../assets/right_half.jpg";
+import rightHalf from "../../assets/right_half.jpg";
 import { useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "./Firebase";
