@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Blog from "../Data/Blog";
-import BlogCard from "../BlogCard";
+import BlogCard from "../components/BlogCard";
 
 function Bookmarked() {
   const [bookmarkedBlogs, setBookmarkedBlogs] = useState([]);
