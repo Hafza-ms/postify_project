@@ -43,8 +43,8 @@ function NavBar() {
 
           {currentUser && (
             <Nav className="ms-auto align-items-center">
-              <NavDropdown title={`👤 ${currentUser}`} id="user-dropdown" align="end">
-                <NavDropdown.ItemText>Profile</NavDropdown.ItemText>
+              <NavDropdown title={`👤 ${currentUser.displayName || currentUser.email}`} id="user-dropdown" align="end">
+                <NavDropdown.Item as={Link} to="/profile">Profile</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/bookmarked">Library</NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item onClick={handleLogout}>

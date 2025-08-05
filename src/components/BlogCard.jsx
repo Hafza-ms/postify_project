@@ -54,7 +54,7 @@ function BlogCard({ blog }) {
       bookmarks.push(blog.id);
     }
     
-   ocalStorage.setItem(bookmarkKey, JSON.stringify(bookmarks));
+   localStorage.setItem(bookmarkKey, JSON.stringify(bookmarks));
     setBookmarked(!bookmarked);
   };
 
