@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { FaHeart, FaRegHeart, FaBookmark, FaRegBookmark, FaCommentDots } from 'react-icons/fa';
+import useLocalUser from './Data/UseLocalUser';
 
 function BlogCard({ blog }) {
   const [liked, setLiked] = useState(false);
@@ -9,56 +10,51 @@ function BlogCard({ blog }) {
   const [bookmarked, setBookmarked] = useState(false);
   const [commentCount, setCommentCount] = useState(0);
 
-  const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-   const currentUserEmail = currentUser?.email || 'guest';  // fallback key if user not logged
+  const currentUser = useLocalUser();
+  const currentUserEmail = currentUser?.email || 'guest';
  
    useEffect(() => {
-    const likedPosts = JSON.parse(localStorage.getItem(`likedPosts-${currentUserEmail}`)) || [];
-    const bookmarkedPosts = JSON.parse(localStorage.getItem(`bookmarkedPosts-${currentUserEmail}`)) || [];
+    const likedKey = `likedPosts-${currentUserEmail}`;
+    const bookmarkedKey = `bookmarkedPosts-${currentUserEmail}`;
 
-    setLiked(likedPosts.includes(blog.id));
-    setBookmarked(bookmarkedPosts.includes(blog.id));
-
-    // Load total like count for this blog
-    const storedLikeCount = JSON.parse(localStorage.getItem(`likes-${blog.id}`)) || 0;
-    setLikeCount(storedLikeCount);
-
-    // Load comment count
-    const storedComments = JSON.parse(localStorage.getItem(`comments-${blog.id}`)) || [];
-    setCommentCount(storedComments.length);
-  }, [blog.id, currentUser]);
+    setLiked((JSON.parse(localStorage.getItem(likedKey)) || []).includes(blog.id));
+    setBookmarked((JSON.parse(localStorage.getItem(bookmarkedKey)) || []).includes(blog.id))
+    setLikeCount(JSON.parse(localStorage.getItem(`likes-${blog.id}`)) || 0);
+    setCommentCount((JSON.parse(localStorage.getItem(`comments-${blog.id}`)) || []).length);
+  }, [blog.id, currentUserEmail]);
+  
 
   const handleLike = () => {
-    const likedPostsKey = `likedPosts-${currentUser}`;
-    const likedPosts = JSON.parse(localStorage.getItem(likedPostsKey)) || [];
-
-    let updatedLikes;
-    let updatedCount = likeCount;
+    const likedKey = `likedPosts-${currentUserEmail}`;
+    let likedPosts = JSON.parse(localStorage.getItem(likedKey)) || [];
+    let count = likeCount;
 
     if (liked) {
-      updatedLikes = likedPosts.filter((id) => id !== blog.id);
-      updatedCount = Math.max(0, likeCount - 1);
+      likedPosts = likedPosts.filter(id => id !== blog.id);
+      count = Math.max(0, count - 1);
     } else {
-      updatedLikes = [...likedPosts, blog.id];
-      updatedCount = likeCount + 1;
+      likedPosts.push(blog.id);
+      count += 1;
     }
 
-    localStorage.setItem(likedPostsKey, JSON.stringify(updatedLikes));
-    localStorage.setItem(`likes-${blog.id}`, JSON.stringify(updatedCount));
+    localStorage.setItem(likedKey, JSON.stringify(likedPosts));
+    localStorage.setItem(`likes-${blog.id}`, JSON.stringify(count));
 
     setLiked(!liked);
-    setLikeCount(updatedCount);
+    setLikeCount(count);
   };
 
   const handleBookmark = () => {
-    const bookmarkedKey = `bookmarkedPosts-${currentUserEmail}`;
-    const bookmarkedPosts = JSON.parse(localStorage.getItem(bookmarkedKey)) || [];
+    const bookmarkKey = `bookmarkedPosts-${currentUserEmail}`;
+    let bookmarks = JSON.parse(localStorage.getItem(bookmarkKey)) || [];
     
-    const updatedBookmarks = bookmarked
-      ? bookmarkedPosts.filter((id) => id !== blog.id)
-      : [...bookmarkedPosts, blog.id];
+     if (bookmarked) {
+      bookmarks = bookmarks.filter(id => id !== blog.id);
+    } else {
+      bookmarks.push(blog.id);
+    }
     
-    localStorage.setItem('bookmarkedPosts', JSON.stringify(updatedBookmarks));
+   ocalStorage.setItem(bookmarkKey, JSON.stringify(bookmarks));
     setBookmarked(!bookmarked);
   };
 

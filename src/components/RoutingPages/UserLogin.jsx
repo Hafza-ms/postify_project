@@ -56,7 +56,7 @@ function UserLogin() {
     );
 
       toast.success("Login successful!");
-      navigate("/", { state: userData });
+      setTimeout(()=>navigate("/"),100)
     } catch (err) {
       if (err.code === "auth/user-not-found") {
         toast.error("User not found.");

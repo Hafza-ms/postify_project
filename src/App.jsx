@@ -25,15 +25,25 @@ import { auth } from "./components/RoutingPages/Firebase";
 
 
 function App() {
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(()=>{
+  const stored = localStorage.getItem("currentUser");
+    return stored ? JSON.parse(stored) : null;
+  });
   const [checkingStatus, setCheckingStatus] = useState(true);
 
 useEffect(() => {
   const unsubscribe = onAuthStateChanged(auth, (user) => {
+    
     setTimeout(() => {
-      if (user) {
-        setCurrentUser(user.email);
-        localStorage.setItem("currentUser", JSON.stringify(user.email));
+     if (user) {
+        const userObj = {
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName || "",
+          photoURL: user.photoURL || "",
+        };
+        setCurrentUser(userObj);
+        localStorage.setItem("currentUser", JSON.stringify(userObj));
       } else {
         setCurrentUser(null);
         localStorage.removeItem("currentUser");
@@ -61,7 +71,7 @@ useEffect(() => {
       <div className="container mt-4">
         <Routes>
           {/* Firebase-auth pages */}
-          <Route path="/login" element={<UserLogin />} />
+          <Route path="/login" element={!currentUser ? <UserLogin /> : <Navigate to="/" />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/verify-otp" element={<SendOTP />} />
@@ -74,7 +84,7 @@ useEffect(() => {
           <Route path="/bookmarked" element={currentUser ? <Bookmarked /> : <Navigate to="/login" />} />
           <Route path="/profile" element={currentUser ? <Profile /> : <Navigate to="/login" />} />
         </Routes>
-        <Footer />
+        {currentUser &&<Footer />}
       </div>
     </BrowserRouter>
     
