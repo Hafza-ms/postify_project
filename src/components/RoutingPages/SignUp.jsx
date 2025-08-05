@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Form, Button, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { collection, query, where, getDocs } from "firebase/firestore";
-import { db } from "./Firebase";
+import {db } from "./Firebase";
 import CryptoJS from "crypto-js";
 import signUpBg from '../../assets/sign_up_bg.jpg';
+
 
 
 function SignUp() {

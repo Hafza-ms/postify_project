@@ -20,28 +20,47 @@ import ProfilePicUpload from "./components/RoutingPages/ProfilePicUpload";
 import UserDatabase from "./components/RoutingPages/UserDatabase";
 import LogoLoading from "./components/RoutingPages/LogoLoading";
 
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./components/RoutingPages/Firebase";
+
 
 function App() {
-  const [loading, setLoading] = useState(true);
-  const currentUser = localStorage.getItem("currentUser");
+  const [currentUser, setCurrentUser] = useState(null);
+  const [checkingStatus, setCheckingStatus] = useState(true);
 
-   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 3000);
-    return () => clearTimeout(timer);
-  }, []);
+useEffect(() => {
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    setTimeout(() => {
+      if (user) {
+        setCurrentUser(user.email);
+        localStorage.setItem("currentUser", JSON.stringify(user.email));
+      } else {
+        setCurrentUser(null);
+        localStorage.removeItem("currentUser");
+      }
+      setCheckingStatus(false);
+    }, 3000); // 3 second delay for testing
+  });
 
-  if (loading) {
+  return () => unsubscribe();
+}, []);
+
+  if (checkingStatus) {
     return <LogoLoading />;
   }
+
+
+
+  
 
   return (
     <>
  
     <BrowserRouter>
-      <NavBar />
+      {currentUser && <NavBar />} {/* ✅ Show only if logged in */}
       <div className="container mt-4">
         <Routes>
-         {/* Firebase-auth pages */}
+          {/* Firebase-auth pages */}
           <Route path="/login" element={<UserLogin />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -49,7 +68,7 @@ function App() {
           <Route path="/profile-pic" element={<ProfilePicUpload />} />
           <Route path="/user-database" element={currentUser ? <UserDatabase /> : <Navigate to="/login" />} />
 
-          {/* Blog pages (require currentUser from localStorage) */}
+          {/* Blog pages (require currentUser) */}
           <Route path="/" element={currentUser ? <Home /> : <Navigate to="/login" />} />
           <Route path="/readmore/:id" element={currentUser ? <ReadMore /> : <Navigate to="/login" />} />
           <Route path="/bookmarked" element={currentUser ? <Bookmarked /> : <Navigate to="/login" />} />

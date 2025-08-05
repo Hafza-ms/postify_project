@@ -120,7 +120,14 @@ const ProfilePicUpload = () => {
         avatarName: avatarName,
       };
 
-      await addDoc(collection(db, "users"), userToSave);
+         // ✅ Save to Firestore
+      const userRef = await addDoc(collection(db, "users"), userToSave);
+
+      // ✅ Store in localStorage
+      localStorage.setItem("currentUser", JSON.stringify(userToSave.username));
+      localStorage.setItem("userId", userRef.id);
+      
+      
       alert("🎉 Account created successfully!");
       navigate("/");
     } catch (err) {

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import './Home.css'
 import Blog from "../Data/Blog";
-import { Link } from 'react-router-dom';
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "./Firebase"; 
 import BlogCard from '../BlogCard';
 
 
@@ -9,27 +10,52 @@ function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [allBlogs, setAllBlogs] = useState([]);
 
-   useEffect(() => {
-    // Load user-created posts from localStorage
-    const profilePosts = JSON.parse(localStorage.getItem("postify-posts")) || [];
-    
-     // Format them to match BlogCard structure
-    const formattedProfilePosts = profilePosts.map((post) => ({
-      id: post.id,
-      title: post.caption || "Untitled Post",
-      author: post.author || localStorage.getItem("currentUser") || "Anonymous",
-      excerpt: post.caption?.slice(0, 100) || "",
-      content: post.caption || "",
-      image: post.photos?.[0] || null,
-      date: new Date(post.id).toLocaleDateString(),
-    }));
+    useEffect(() => {
+    const fetchBlogs = async () => {
+      // 🔵 1. Load localStorage posts
+      const profilePosts = JSON.parse(localStorage.getItem("postify-posts")) || [];
 
-    // Merge user-created + static blog list
-    const combined = [...formattedProfilePosts, ...Blog];
-    setAllBlogs(combined);
-  }, [])
+      const formattedLocalPosts = profilePosts.map((post) => ({
+        id: post.id,
+        title: post.caption || "Untitled Post",
+        author: post.author || localStorage.getItem("currentUser") || "Anonymous",
+        excerpt: post.caption?.slice(0, 100) || "",
+        content: post.caption || "",
+        image: post.photos?.[0] || null,
+        date: new Date(post.id).toLocaleDateString(),
+      }));
 
-  const filteredBlogs = Blog.filter((post) =>
+      // 🔴 2. Load Firebase posts
+      const firebasePosts = [];
+      try {
+        const querySnapshot = await getDocs(collection(db, "posts"));
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          firebasePosts.push({
+            id: doc.id,
+            title: data.title || "Untitled Post",
+            author: data.author || "FirebaseUser",
+            excerpt: data.content?.slice(0, 100) || "",
+            content: data.content || "",
+            image: data.image || null,
+            date: data.date
+              ? new Date(data.date.seconds * 1000).toLocaleDateString()
+              : "Unknown",
+          });
+        });
+      } catch (error) {
+        console.error("Error fetching Firebase blogs:", error);
+      }
+
+      // 🟢 3. Merge all: Firebase + LocalStorage + Static
+      const combined = [...firebasePosts, ...formattedLocalPosts, ...Blog];
+      setAllBlogs(combined);
+    };
+
+   fetchBlogs();
+  },[]);
+
+  const filteredBlogs = allBlogs.filter((post) =>
     post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     post.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
     post.excerpt.toLowerCase().includes(searchTerm.toLowerCase())

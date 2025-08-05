@@ -1,15 +1,23 @@
 import React from 'react';
 import { useNavigate, Link } from "react-router-dom";
-import { Navbar, Nav, Container, NavDropdown, Button } from 'react-bootstrap';
+import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
 import logo from '../assets/logo_postify.jpg';
+import { signOut } from "firebase/auth";
+import { auth } from "./RoutingPages/Firebase"
 
 function NavBar() {
-  const currentUser = localStorage.getItem('currentUser');
+  const currentUser =JSON.parse(localStorage.getItem('currentUser'));
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem('currentUser');
-    navigate('/login');
+ const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      localStorage.removeItem("currentUser");
+      localStorage.removeItem("userId");
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
   return (

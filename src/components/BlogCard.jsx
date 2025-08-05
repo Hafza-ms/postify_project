@@ -9,11 +9,12 @@ function BlogCard({ blog }) {
   const [bookmarked, setBookmarked] = useState(false);
   const [commentCount, setCommentCount] = useState(0);
 
-  const currentUser = localStorage.getItem('currentUser');
-
-  useEffect(() => {
-    const likedPosts = JSON.parse(localStorage.getItem(`likedPosts-${currentUser}`)) || [];
-    const bookmarkedPosts = JSON.parse(localStorage.getItem('bookmarkedPosts')) || [];
+  const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+   const currentUserEmail = currentUser?.email || 'guest';  // fallback key if user not logged
+ 
+   useEffect(() => {
+    const likedPosts = JSON.parse(localStorage.getItem(`likedPosts-${currentUserEmail}`)) || [];
+    const bookmarkedPosts = JSON.parse(localStorage.getItem(`bookmarkedPosts-${currentUserEmail}`)) || [];
 
     setLiked(likedPosts.includes(blog.id));
     setBookmarked(bookmarkedPosts.includes(blog.id));
@@ -50,10 +51,13 @@ function BlogCard({ blog }) {
   };
 
   const handleBookmark = () => {
-    const bookmarkedPosts = JSON.parse(localStorage.getItem('bookmarkedPosts')) || [];
+    const bookmarkedKey = `bookmarkedPosts-${currentUserEmail}`;
+    const bookmarkedPosts = JSON.parse(localStorage.getItem(bookmarkedKey)) || [];
+    
     const updatedBookmarks = bookmarked
       ? bookmarkedPosts.filter((id) => id !== blog.id)
       : [...bookmarkedPosts, blog.id];
+    
     localStorage.setItem('bookmarkedPosts', JSON.stringify(updatedBookmarks));
     setBookmarked(!bookmarked);
   };

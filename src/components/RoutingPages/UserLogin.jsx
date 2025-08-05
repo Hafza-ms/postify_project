@@ -44,14 +44,28 @@ function UserLogin() {
       const userDocSnap = await getDoc(userDocRef);
       const userData = userDocSnap.exists() ? userDocSnap.data() : {};
 
+      // ✅ Store currentUser in localStorage
+    localStorage.setItem(
+      "currentUser",
+      JSON.stringify({
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName || userData.name || "",
+        photoURL: user.photoURL || userData.photoURL || "",
+      })
+    );
+
       toast.success("Login successful!");
-      navigate("/dashboard", { state: userData });
+      navigate("/", { state: userData });
     } catch (err) {
       if (err.code === "auth/user-not-found") {
         toast.error("User not found.");
       } else if (err.code === "auth/wrong-password") {
         toast.error("Incorrect password.");
-      } else {
+      } else if (err.code === "auth/invalid-credential") {
+        toast.error("Invalid credentials. Please double-check your email and password.");
+      }
+      else {
         toast.error("Login failed. Please try again.");
       }
       console.error(err);
