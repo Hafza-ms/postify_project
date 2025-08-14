@@ -1,0 +1,71 @@
+
+.tagline-container {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+
+.tagline-title {
+  font-size: 3rem;
+  font-weight: 700;
+}
+
+
+.tagline-text {
+  font-style: italic;
+  color: #6c757d;
+  font-size: 1.5rem;
+  opacity: 0;
+  animation: fadeIn 2s ease-in-out forwards;
+}
+
+
+.tagline-highlight {
+  color: #212529;
+  font-weight: 600;
+}
+
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+
+@media (max-width: 576px) {
+  .tagline-title {
+    font-size: 3rem;
+  }
+
+  .tagline-text {
+    font-size: 1.5rem;
+  }
+}
+
+.hero-background {
+  background-image: url('https://images.pexels.com/photos/4240497/pexels-photo-4240497.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+}
+
+/* Ensure all BlogCards are the same height inside grid */
+.row > .col-md-6, .col-lg-4 {
+  display: flex;
+}
+
+.blog-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+

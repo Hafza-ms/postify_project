@@ -1,5 +1,5 @@
 import React from 'react'
-import logo from '../assets/logo_postify.jpg'
+import logo from '../assets/postify_standard_logo.jpg'
 
 function Footer() {
   return (

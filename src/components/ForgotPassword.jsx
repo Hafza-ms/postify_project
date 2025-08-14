@@ -11,7 +11,7 @@ import {
   doc,
 } from "firebase/firestore";
 import CryptoJS from "crypto-js";
-import rightHalf from "./assets/right_half.jpg"
+import rightHalf from "../assets/right_half.jpg";
 import { useNavigate } from "react-router-dom";
 
 const ForgotPassword = () => {
