@@ -102,14 +102,7 @@ function App() {
               <Route path="/readmore/:id" element={currentUser ? <ReadMore /> : <Navigate to="/login" />} />
               <Route path="/bookmarked" element={currentUser ? <Bookmarked /> : <Navigate to="/login" />} />
               <Route path="/profile" element={currentUser ? <Profile /> : <Navigate to="/login" />} />
-              <Route
-                path="*"
-                element={
-                  <div style={{ textAlign: "center", marginTop: "100px" }}>
-                    <h2>404 - Page Not Found</h2>
-                  </div>
-                }
-              />
+              <Route path="*"element={<div style={{ textAlign: "center", marginTop: "100px" }}><h2>404 - Page Not Found</h2></div>}/>
             </Routes>
             <ToastContainer position="top-right" autoClose={3000} />
             {currentUser && <Footer />}
